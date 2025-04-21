@@ -18,14 +18,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	Player fireboy, watergirl;
 
 	public GamePanel(int level) {
-		this.setFocusable(true);
-		this.addKeyListener(this);
+		this.setFocusable(true); 
+		this.addKeyListener(this); 
 
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 		
 		this.level = level;
 		
-		//TEMPORARY
 		walls[0] = new Wall(0, 0, 1080, 30);
 		walls[1] = new Wall(0, 0, 30, 720);
 		walls[2] = new Wall(0, 690, 1080, 720);
@@ -33,7 +32,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		walls[4] = new Wall(30, 600, 1000, 630);
 		fireboy = new Player('w', 'a', 'd', 100, 100, Color.red);
 		watergirl = new Player((char)38, (char)37, (char)39, 200, 100, Color.blue);
-		//TEMPORARY
+	
 		
 		gameThread = new Thread(this);
 		gameThread.start();
@@ -107,7 +106,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+
 		
 	}
 
@@ -136,7 +135,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		double delta = 0;
 		long now;
 
-		while (true) {
+		while (true) { 
 			now = System.nanoTime();
 			delta = delta + (now - lastTime) / ns;
 			lastTime = now;

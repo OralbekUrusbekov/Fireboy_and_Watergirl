@@ -31,12 +31,15 @@ public class Player extends Rectangle{
 			move();
 		}
 		
+	
 		if (e.getKeyCode() == rightButton || e.getKeyChar() == rightButton) {
+	
 			xVelocity = HorozontalSPEED;
 			move();
 		}
 		
 		if (e.getKeyCode() == upButton || e.getKeyChar() == upButton) {
+	
 			if(!inAir) {
 				inAir = true;
 				yVelocity = -VerticalSPEED;
@@ -46,11 +49,13 @@ public class Player extends Rectangle{
 	}
 
 	public void keyReleased(KeyEvent e) {
+	
 		if (e.getKeyCode() == leftButton || e.getKeyChar() == leftButton) {
 			xVelocity = 0;
 			move();
 		}
 		
+	
 		if (e.getKeyCode() == rightButton || e.getKeyChar() == rightButton) {
 			xVelocity = 0;
 			move();
@@ -66,7 +71,7 @@ public class Player extends Rectangle{
 	}
 	
 	public void draw(Graphics g) {
-		g.setColor(colour);
-		g.fillRect(x, y, PlayerWidth, PlayerHeight);
+		g.setColor(colour); 
+		g.fillRect(x, y, PlayerWidth, PlayerHeight); 
 	}
 }
