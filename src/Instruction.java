@@ -1,11 +1,3 @@
-package fireboywatergirl;
-
-// Instruction Class
-// William Dai
-// Dec 23, 2022
-// The instruction class prints a string at a specified x and y location on screen
-// Child of Rectangle class
-
 import java.awt.*;
 
 public class Instruction extends Rectangle {

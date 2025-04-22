@@ -1,4 +1,3 @@
-package fireboywatergirl;
 
 public class Main {
 
