@@ -1,5 +1,3 @@
-package fireboywatergirl;
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -23,8 +21,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	public boolean gameFinished, playersAlive;
 
 	public GamePanel(int level) {
-		this.setFocusable(true); // make everything in this class appear on the screen
-		this.addKeyListener(this); // start listening for keyboard input
+		this.setFocusable(true); 
+		this.addKeyListener(this);
 
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 		levelComplete = new Instruction(400, 300, "Level Complete");
@@ -60,10 +58,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	}
 	
 	public void paint(Graphics g) {
-		image = createImage(GAME_WIDTH, GAME_HEIGHT); // draw off screen
+		image = createImage(GAME_WIDTH, GAME_HEIGHT);
 		graphics = image.getGraphics();
-		draw(graphics); // update the positions of everything on the screen
-		g.drawImage(image, 0, 0, this); // redraw everything on the screen
+		draw(graphics); 
+		g.drawImage(image, 0, 0, this);
 	}
 	
 	public void Reset() {
@@ -194,7 +192,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		double delta = 0;
 		long now;
 
-		while (true) { // this is the infinite game loop
+		while (true) {
 			now = System.nanoTime();
 			delta = delta + (now - lastTime) / ns;
 			lastTime = now;
