@@ -38,8 +38,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		walls[2] = new Wall(0, 690, 1080, 720);
 		walls[3] = new Wall(1050, 0, 1080, 720);
 		walls[4] = new Wall(30, 600, 1000, 630);
-		fireboy = new Player('w', 'a', 'd', 100, 100, Color.red, 400, 540);
-		watergirl = new Player((char)38, (char)37, (char)39, 200, 100, Color.blue, 500, 540);
+		fireboy = new Player('w', 'a', 'd', 100, 100, Color.red, 400, 540, "src/fireboy_station.png");
+		watergirl = new Player((char)38, (char)37, (char)39, 200, 100, Color.blue, 500, 540, "src/watergirl.png");
 		pools[0] = new Pool(550, 600, 70, 0);
 		pools[1] = new Pool(630, 600, 70, 1);
 		pools[2] = new Pool(710, 600, 70, 2);

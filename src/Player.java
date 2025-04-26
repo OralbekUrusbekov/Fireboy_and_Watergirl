@@ -14,11 +14,12 @@ public class Player extends Rectangle{
 	public boolean inAir;
 	Color colour;
 	Door destination;
+	String filepath;
 	
 	private int w, h;
 	public Image playerImage;
 	
-	public Player(char upButton, char leftButton, char rightButton, int startX, int startY, Color colour, int doorX, int doorY) {
+	public Player(char upButton, char leftButton, char rightButton, int startX, int startY, Color colour, int doorX, int doorY, String filepath) {
 		super(startX, startY, PlayerWidth, PlayerHeight);
 		x = startX; y = startY;
 		this.startX = startX; this.startY = startY;
@@ -27,25 +28,26 @@ public class Player extends Rectangle{
 		this.leftButton = leftButton;
 		this.rightButton = rightButton;
 		this.colour = colour;
+		this.filepath = filepath;
 		destination = new Door(doorX, doorY, this.colour);
 		
 		xVelocity = 0; yVelocity = 0;
 		inAir = true;
 		
-		//loadImage();
+		loadImage();
 	}
 	
-	/*public void loadImage() {
-		ImageIcon ii = new ImageIcon("src/assets/Fireboy.png");
+	public void loadImage() {
+		ImageIcon ii = new ImageIcon(filepath);
 		playerImage = ii.getImage();
-		
+
 		w = playerImage.getWidth(null);
 		h = playerImage.getHeight(null);
 	}
-	
+
 	public Image getImage() {
 		return playerImage;
-	}*/
+	}
 	
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == leftButton || e.getKeyChar() == leftButton) {
@@ -103,8 +105,8 @@ public class Player extends Rectangle{
 	}
 	
 	public void draw(Graphics g) {
-		g.setColor(colour); 
-		g.fillRect(x, y, PlayerWidth, PlayerHeight); 
+		g.setColor(colour);
+		g.drawImage(playerImage, x, y, PlayerWidth, PlayerHeight, null);
 		destination.draw(g);
 	}
 }
