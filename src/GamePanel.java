@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
-import java.io.File;
 import java.util.*;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener{
@@ -58,7 +57,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		inGame = false;
 		inHome = true;
 		
-		background = new ImageIcon("src/Images/Background.jpeg").getImage();
+		background = new ImageIcon("./Images/Background.jpeg").getImage();
 		
 		walls = new Wall[4];
 		walls[0] = new Wall(0, 0, 1080, 30);
@@ -142,8 +141,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		pools = new Pool[readInt()];
 		for(int i=0;i<walls.length;i++) walls[i] = new Wall(readInt(), readInt(), readInt(), readInt());
 		for(int i=0;i<pools.length;i++) pools[i] = new Pool(readInt(), readInt(), readInt(), readInt());
-		fireboy = new Player('w', 'a', 'd', readInt(), readInt(), Color.red, readInt(), readInt());
-		watergirl = new Player((char)38, (char)37, (char)39, readInt(), readInt(), Color.blue, readInt(), readInt());
+		fireboy = new Player('w', 'a', 'd', readInt(), readInt(), Color.red, readInt(), readInt(),"./fireboy_station.png");
+		watergirl = new Player((char)38, (char)37, (char)39, readInt(), readInt(), Color.blue, readInt(), readInt(),"./watergirl.png");
 		
 		//TEMPORARY
 		/*walls[0] = new Wall(0, 0, 1080, 30);
