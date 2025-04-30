@@ -5,7 +5,7 @@ import java.awt.Image;
 
 public class Door extends Rectangle{
 
-	public static final int DOOR_WIDTH = 55, DOOR_HEIGHT = 60; // dimensions of door
+	public static final int DOOR_WIDTH = 55, DOOR_HEIGHT = 60;
 
 
 	Color colour;
