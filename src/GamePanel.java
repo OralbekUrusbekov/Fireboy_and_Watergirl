@@ -7,8 +7,7 @@ import java.util.*;
 public class GamePanel extends JPanel implements Runnable, KeyListener{
 	
 	static BufferedReader br;
-	static StringTokenizer st;
-	
+	static StringTokenizer st;	
 	static String next () throws IOException {
 		while (st == null || !st.hasMoreTokens())
 			st = new StringTokenizer(br.readLine().trim());
@@ -17,29 +16,29 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	static int readInt () throws IOException {
 		return Integer.parseInt(next());
 	}
-	static char readChar () throws IOException {
-		return next().charAt(0);
-	}
 	
 	public Image image;
 	public Graphics graphics;
 	public Thread gameThread;
-	public Image background;
+	public Image background, title, pauseButtonIcon;
 	
 	public static final int GAME_WIDTH = 1080;
 	public static final int GAME_HEIGHT = 720;
 	
+	
 	int level = 0;
 	Wall walls[];
 	Pool pools[];
-	Instruction levelComplete, returnToHome;
+	Instruction levelComplete, returnToHome, retry, resume;
 	Instruction[] levels = new Instruction[2];	
+	Instruction pauseButton, instructions;
 	Player fireboy, watergirl;
 	
 	public boolean gameFinished, playersAlive;
 	public int framesAtFinish, framesDead;
-	public boolean inGame, inHome, levelLoaded;
+	public boolean inGame, inHome, gamePaused, showingInstructions;
 	int unlockedTo;
+	boolean levelLoaded;
 
 	public GamePanel() throws IOException{
 		this.setFocusable(true);
@@ -48,16 +47,22 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 		
 		levelComplete = new Instruction(400, 300, "Level Complete!");
-		returnToHome = new Instruction(480, 500, "Return", 450, 440, 630, 530, true);
+		returnToHome = new Instruction(480, 550, "Return", 450, 490, 630, 580, true);
+		retry = new Instruction(490, 430, "Retry", 450, 370, 630, 460, true);
+		resume = new Instruction(468, 310, "Resume", 450, 250, 630, 340, true);
 		levels[0] = new Instruction(340, 450, "Level 1", 310, 390, 490, 480, true);
-		//levels[1] = new Instruction(480, 450, "Level 2", 450, 390, 630, 480, false);
 		levels[1] = new Instruction(620, 450, "Level 2", 590, 390, 770, 480, false);
+		pauseButton = new Instruction(1000, 50, " ", 1000, 50, 1030, 80, true);
+		instructions = new Instruction(500, 600, "Help", 450, 540, 630, 630, true);
 		
 		unlockedTo = 1;
 		inGame = false;
 		inHome = true;
+		showingInstructions = false;
 		
-		background = new ImageIcon("./Images/Background.jpeg").getImage();
+		background = new ImageIcon("src/Images/Background.jpeg").getImage();
+		title = new ImageIcon("src/Images/Title.png").getImage();
+		pauseButtonIcon = new ImageIcon("src/Images/PauseButton.png").getImage();
 		
 		walls = new Wall[4];
 		walls[0] = new Wall(0, 0, 1080, 30);
@@ -66,28 +71,53 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		walls[3] = new Wall(1050, 0, 1080, 720);
 		
 		addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                if(inHome) {
-                	try {
-	                	if(levels[0].clicked(e)) { loadLevel(1);}
-	                	else if(levels[1].clicked(e)) loadLevel(2);
-	                	//else if(levels[2].clicked(e)) loadLevel(3);
-                	} catch(Exception ex) {
-                		System.out.println(ex);
-                	}
-                }
-                else if(inGame && gameFinished) {
-                	if(returnToHome.clicked(e)) {
-                		inHome = true;
-                		inGame = false;
-                		unlockedTo = level + 1;
-                		if(unlockedTo <= 3) levels[unlockedTo-1].unlocked = true;
-                		levelLoaded = false;
-                	}
-                }
-            }
-        });
-		
+
+    	public void mousePressed(MouseEvent e) {
+			if(inHome && !showingInstructions) {
+				try {
+					if(levels[0].clicked(e)) { loadLevel(1);}
+					else if(levels[1].clicked(e)) loadLevel(2);
+				} catch(Exception ex) {
+					System.out.println(ex);
+				}
+				if(instructions.clicked(e)) {
+					showingInstructions = true;
+				}
+			}
+			else if(showingInstructions) {
+				if(returnToHome.clicked(e)) {
+					showingInstructions = false;
+				}
+			}
+			else if(inGame && gameFinished) {
+				if(returnToHome.clicked(e)) {
+					inHome = true;
+					inGame = false;
+					unlockedTo = level + 1;
+					if(unlockedTo <= 2) levels[unlockedTo-1].unlocked = true;
+					levelLoaded = false;
+				}
+			}
+			else if(inGame && !gamePaused) {
+				if(pauseButton.clicked(e)) {
+					gamePaused = true;
+				}
+			}
+			else if(inGame && gamePaused) {
+				if(returnToHome.clicked(e)) {
+					inHome = true;
+					inGame = false;
+				}
+				else if(resume.clicked(e)) {
+					gamePaused = false;
+				}
+				else if(retry.clicked(e)) {
+					gamePaused = false;
+					Reset();
+				}
+			}
+		}
+	});
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
@@ -108,22 +138,44 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 			fireboy.draw(g2);
 			watergirl.draw(g2);
 			
+			pauseButton.draw(g);
+			g2.drawImage(pauseButtonIcon, 1000, 50, this);
+			
 			if(gameFinished) {
 				g.setColor(new Color(150,150,150,255));
 				g.fillRect(350, 220, 380, 400);
 				levelComplete.draw(g);
 				returnToHome.draw(g);
 			}
+			else if(gamePaused) {
+				g.setColor(new Color(150,150,150,255));
+				g.fillRect(350, 220, 380, 400);
+				retry.draw(g);
+				resume.draw(g);
+				returnToHome.draw(g);
+			}
 		}
-		else if(inHome) {
+		else if(inHome && !showingInstructions) { 
+			g2.drawImage(title, 180, 150, this);
 			for(int i=0;i<2;i++) levels[i].draw(g);
+			instructions.draw(g);
+		}
+		else if(showingInstructions) {
+			g.setFont(new Font("Arial", Font.PLAIN, 30));
+			g.setColor(Color.white);
+			g.drawString("Use W.A.D to move fireboy", 350, 180);
+			g.drawString("Use arrow keys to move watergirl", 310, 240);
+			g.drawString("Never mix fire and water", 370, 300);
+			g.drawString("Acid will hurt them both", 380, 360);
+			g.drawString("Get them to their exit doors", 350, 420);
+			returnToHome.draw(g);
 		}
 	}
 	
 	public void paint(Graphics g) {
 		image = createImage(GAME_WIDTH, GAME_HEIGHT);
 		graphics = image.getGraphics();
-		draw(graphics); 
+		draw(graphics);
 		g.drawImage(image, 0, 0, this);
 	}
 	
@@ -135,31 +187,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 
 		if(level == 1) br = new BufferedReader(new FileReader("src/LevelFiles/Level1.txt"));
 		else if(level == 2) br = new BufferedReader(new FileReader("src/LevelFiles/Level2.txt"));
-		//else if(level == 3) br = new BufferedReader(new FileReader("src/LevelFiles/Level.txt"));
 		
 		walls = new Wall[readInt()];
 		pools = new Pool[readInt()];
 		for(int i=0;i<walls.length;i++) walls[i] = new Wall(readInt(), readInt(), readInt(), readInt());
 		for(int i=0;i<pools.length;i++) pools[i] = new Pool(readInt(), readInt(), readInt(), readInt());
-		fireboy = new Player('w', 'a', 'd', readInt(), readInt(), Color.red, readInt(), readInt(),"./fireboy_station.png");
-		watergirl = new Player((char)38, (char)37, (char)39, readInt(), readInt(), Color.blue, readInt(), readInt(),"./watergirl.png");
-		
-		//TEMPORARY
-		/*walls[0] = new Wall(0, 0, 1080, 30);
-		walls[1] = new Wall(0, 0, 30, 720);
-		walls[2] = new Wall(0, 690, 1080, 720);
-		walls[3] = new Wall(1050, 0, 1080, 720);
-		walls[4] = new Wall(30, 600, 1000, 630);
-		fireboy = new Player('w', 'a', 'd', 100, 100, Color.red, 400, 540);
-		watergirl = new Player((char)38, (char)37, (char)39, 200, 100, Color.blue, 500, 540);
-		pools[0] = new Pool(550, 600, 70, 0);
-		pools[1] = new Pool(630, 600, 70, 1);
-		pools[2] = new Pool(710, 600, 70, 2);*/
+		fireboy = new Player('w', 'a', 'd', readInt(), readInt(), Color.red, readInt(), readInt());
+		watergirl = new Player((char)38, (char)37, (char)39, readInt(), readInt(), Color.blue, readInt(), readInt());
+
 		levelLoaded = true;
 		Reset();
-		//TEMPORARY
-		
-		
 	}
 	
 	public void Reset() {
@@ -167,6 +204,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		gameFinished = false;
 		framesAtFinish = 0;
 		framesDead = 0;
+		gamePaused = false;
 		fireboy.resetPosition();
 		watergirl.resetPosition();
 	}
@@ -224,7 +262,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		if(fireboy.atDestination() && watergirl.atDestination()) {
 			framesAtFinish++;
 			
-			if(framesAtFinish >= 60) {
+			if(framesAtFinish >= 60) { 
 				gameFinished = true;
 			}
 		}
@@ -258,9 +296,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	public void keyTyped(KeyEvent e) {
 		
 	}
-
+	
 	public void keyPressed(KeyEvent e) {
-		if(inGame) {
+		if(inGame && !gamePaused) {
 			if(!gameFinished && playersAlive) {
 				fireboy.keyPressed(e);
 				watergirl.keyPressed(e);
@@ -269,7 +307,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	}
 
 	public void keyReleased(KeyEvent e) {
-		if(inGame) {
+		if(inGame && !gamePaused) {
 			if(!gameFinished && playersAlive) {
 				fireboy.keyReleased(e);
 				watergirl.keyReleased(e);
@@ -281,9 +319,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		fireboy.move();
 		watergirl.move();
 	}
-
+	
 	@Override
-	public void run() {
+	public void run() { 
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 60;
 		double ns = 1000000000 / amountOfTicks;
@@ -296,7 +334,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 			lastTime = now;
 
 			if (delta >= 1) {
-				if(inGame && levelLoaded) {
+				if(inGame && !gamePaused && levelLoaded) {
 					if(!playersAlive) framesDead++;
 					if(framesDead >= 6) Reset();
 					if(!gameFinished && playersAlive) move();

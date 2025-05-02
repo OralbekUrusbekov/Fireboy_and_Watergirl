@@ -19,7 +19,7 @@ public class Player extends Rectangle{
 	private int w, h;
 	public Image playerImage;
 	
-	public Player(char upButton, char leftButton, char rightButton, int startX, int startY, Color colour, int doorX, int doorY, String filepath) {
+	public Player(char upButton, char leftButton, char rightButton, int startX, int startY, Color colour, int doorX, int doorY) {
 		super(startX, startY, PlayerWidth, PlayerHeight);
 		x = startX; y = startY;
 		this.startX = startX; this.startY = startY;

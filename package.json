@@ -1,0 +1,6 @@
+{
+	"scripts": {
+		"build": "javac ./src/Main.java",
+		"start": "java ./src/Main.class"
+	}
+}
