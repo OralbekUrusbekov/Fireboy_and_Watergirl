@@ -9,7 +9,7 @@ public class Instruction extends Rectangle {
 	int x1, x2, y1, y2;
 	boolean clickable;
 
-	public Instruction(int x, int y, String text, int x1, int y1, int x2, int y2, boolean unlocked) {
+	public 	Instruction(int x, int y, String text, int x1, int y1, int x2, int y2, boolean unlocked) {
 		this.x = x;
 		this.y = y;
 		this.text = text;

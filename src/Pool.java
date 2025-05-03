@@ -15,9 +15,9 @@ public class Pool extends Rectangle{
         super(startX, startY, length, POOL_DEPTH);
         this.type = type;
 
-        if(type == 0) filePath = "../Images/Acid.png";
-        else if(type == 1) filePath = "../Images/Lava.png";
-        else filePath = "../Images/Water.png";
+        if(type == 0) filePath = "./Images/Acid.png";
+        else if(type == 1) filePath = "./Images/Lava.png";
+        else filePath = "./Images/Water.png";
 
         pool = new ImageIcon(filePath).getImage();
         pool = pool.getScaledInstance(length, 10, Image.SCALE_DEFAULT);

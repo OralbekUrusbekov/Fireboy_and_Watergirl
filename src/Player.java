@@ -22,8 +22,8 @@ public class Player extends Rectangle {
 		this.startX = startX;
 		this.startY = startY;
 
-		if (colour == Color.red) imageFilePath = "../Images/Fireboy.png";
-		else imageFilePath = "../Images/Watergirl.png";
+		if (colour == Color.red) imageFilePath = "./Images/Fireboy.png";
+		else imageFilePath = "./Images/Watergirl.png";
 		image = new ImageIcon(imageFilePath).getImage();
 
 		this.upButton = upButton;

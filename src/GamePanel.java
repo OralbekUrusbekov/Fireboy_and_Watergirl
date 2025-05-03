@@ -60,9 +60,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		inHome = true;
 		showingInstructions = false;
 		
-		background = new ImageIcon("src/Images/Background.jpeg").getImage();
-		title = new ImageIcon("src/Images/Title.png").getImage();
-		pauseButtonIcon = new ImageIcon("src/Images/PauseButton.png").getImage();
+		background = new ImageIcon("./Images/Background.jpeg").getImage();
+		title = new ImageIcon("./Images/Title.png").getImage();
+		pauseButtonIcon = new ImageIcon("./Images/PauseButton.png").getImage();
 		
 		walls = new Wall[4];
 		walls[0] = new Wall(0, 0, 1080, 30);
